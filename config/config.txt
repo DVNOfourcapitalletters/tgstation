@@ -275,7 +275,7 @@ CHECK_RANDOMIZER
 ## from https://github.com/rg3/youtube-dl/releases
 ## or your package manager
 ## The default value assumes youtube-dl is in your system PATH
-# INVOKE_YOUTUBEDL youtube-dl
+INVOKE_YOUTUBEDL youtube-dl
 
 ## In-game features
 ##Toggle for having jobs load up from the .txt
@@ -303,7 +303,7 @@ TICK_LIMIT_MC_INIT 500
 TICKLAG 0.5
 
 ##Can also be set as per-second value, the following value is identical to the above.
-#FPS 20
+#FPS 40
 
 ## Comment this out to disable automuting
 #AUTOMUTE_ON

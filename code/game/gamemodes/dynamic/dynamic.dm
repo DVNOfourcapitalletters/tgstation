@@ -106,8 +106,6 @@ GLOBAL_VAR_INIT(dynamic_forced_threat_level, -1)
 	var/only_ruleset_executed = FALSE
 	/// Dynamic configuration, loaded on pre_setup
 	var/list/configuration = null
-	/// Antags rolled by rules so far, to keep track of and discourage scaling past a certain ratio of crew/antags especially on lowpop.
-	var/antags_rolled = 0
 
 /datum/game_mode/dynamic/admin_panel()
 	var/list/dat = list("<html><head><meta http-equiv='Content-Type' content='text/html; charset=UTF-8'><title>Game Mode Panel</title></head><body><h1><B>Game Mode Panel</B></h1>")
@@ -323,6 +321,10 @@ GLOBAL_VAR_INIT(dynamic_forced_threat_level, -1)
 					stack_trace("Invalid dynamic configuration variable [variable] in [ruleset.ruletype] [ruleset.name].")
 					continue
 				ruleset.vars[variable] = rule_conf[variable]
+		if(CONFIG_GET(flag/protect_roles_from_antagonist))
+			ruleset.restricted_roles |= ruleset.protected_roles
+		if(CONFIG_GET(flag/protect_assistant_from_antagonist))
+			ruleset.restricted_roles |= "Assistant"
 	for(var/i in GLOB.new_player_list)
 		var/mob/dead/new_player/player = i
 		if(player.ready == PLAYER_READY_TO_PLAY && player.mind)

@@ -59,7 +59,7 @@
 		return
 
 	// now generate name
-	var/soundfile = "sound/instruments/[instrumentDir]/[ascii2text(note+64)][acc][oct].[instrumentExt]"
+	var/soundfile = "sound/runtime/instruments/[instrumentDir]/[ascii2text(note+64)][acc][oct].[instrumentExt]"
 	soundfile = file(soundfile)
 	// make sure the note exists
 	if(!fexists(soundfile))
@@ -196,7 +196,6 @@
 
 	var/datum/browser/popup = new(user, "instrument", instrumentObj.name, 700, 500)
 	popup.set_content(dat)
-	popup.set_title_image(user.browse_rsc_icon(instrumentObj.icon, instrumentObj.icon_state))
 	popup.open()
 
 /datum/song/proc/ParseSong(text)

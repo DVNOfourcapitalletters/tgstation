@@ -45,7 +45,7 @@
 										/datum/reagent/consumable/sodiumchloride, /datum/reagent/consumable/sugar, /datum/reagent/consumable/orangejuice, /datum/reagent/consumable/tomatojuice, /datum/reagent/consumable/milk
 									),
 									list(	//level 4
-										/datum/reagent/medicine/spaceacillin, /datum/reagent/medicine/salglu_solution, /datum/reagent/medicine/epinephrine, /datum/reagent/medicine/C2/multiver
+										/datum/reagent/medicine/spaceacillin, /datum/reagent/medicine/salglu_solution, /datum/reagent/medicine/epinephrine, /datum/reagent/medicine/c2/multiver
 									),
 									list(	//level 5
 										/datum/reagent/fuel/oil, /datum/reagent/medicine/synaptizine, /datum/reagent/medicine/mannitol, /datum/reagent/drug/space_drugs, /datum/reagent/cryptobiolin
@@ -85,7 +85,7 @@
 			S.End(src)
 	return ..()
 
-/datum/disease/advance/try_infect(var/mob/living/infectee, make_copy = TRUE)
+/datum/disease/advance/try_infect(mob/living/infectee, make_copy = TRUE)
 	//see if we are more transmittable than enough diseases to replace them
 	//diseases replaced in this way do not confer immunity
 	var/list/advance_diseases = list()
@@ -392,7 +392,7 @@
 */
 
 // Mix a list of advance diseases and return the mixed result.
-/proc/Advance_Mix(var/list/D_list)
+/proc/Advance_Mix(list/D_list)
 	var/list/diseases = list()
 
 	for(var/datum/disease/advance/A in D_list)

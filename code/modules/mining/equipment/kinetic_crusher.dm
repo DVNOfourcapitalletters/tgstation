@@ -17,15 +17,15 @@
 	custom_materials = list(/datum/material/iron=1150, /datum/material/glass=2075)
 	hitsound = 'sound/weapons/bladeslice.ogg'
 	attack_verb = list("smashed", "crushed", "cleaved", "chopped", "pulped")
-	sharpness = IS_SHARP
+	sharpness = SHARP_EDGED
 	actions_types = list(/datum/action/item_action/toggle_light)
 	obj_flags = UNIQUE_RENAME
+	light_on = FALSE
 	var/list/trophies = list()
 	var/charged = TRUE
 	var/charge_time = 15
 	var/detonation_damage = 50
 	var/backstab_bonus = 30
-	var/light_on = FALSE
 	var/brightness_on = 5
 	var/wielded = FALSE // track wielded status on item
 
@@ -81,6 +81,8 @@
 		user.drop_all_held_items()
 		return
 	var/datum/status_effect/crusher_damage/C = target.has_status_effect(STATUS_EFFECT_CRUSHERDAMAGETRACKING)
+	if(!C)
+		C = target.apply_status_effect(STATUS_EFFECT_CRUSHERDAMAGETRACKING)
 	var/target_health = target.health
 	..()
 	for(var/t in trophies)
@@ -117,6 +119,8 @@
 		if(!CM || CM.hammer_synced != src || !L.remove_status_effect(STATUS_EFFECT_CRUSHERMARK))
 			return
 		var/datum/status_effect/crusher_damage/C = L.has_status_effect(STATUS_EFFECT_CRUSHERDAMAGETRACKING)
+		if(!C)
+			C = L.apply_status_effect(STATUS_EFFECT_CRUSHERDAMAGETRACKING)
 		var/target_health = L.health
 		for(var/t in trophies)
 			var/obj/item/crusher_trophy/T = t
@@ -144,7 +148,7 @@
 		playsound(src.loc, 'sound/weapons/kenetic_reload.ogg', 60, TRUE)
 
 /obj/item/kinetic_crusher/ui_action_click(mob/user, actiontype)
-	light_on = !light_on
+	set_light_on(!light_on)
 	playsound(user, 'sound/weapons/empty.ogg', 100, TRUE)
 	update_brightness(user)
 	update_icon()

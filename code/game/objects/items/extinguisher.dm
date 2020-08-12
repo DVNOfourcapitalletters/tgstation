@@ -42,6 +42,8 @@
 	dog_fashion = null
 
 /obj/item/extinguisher/proc/refill()
+	if(!chem)
+		return
 	create_reagents(max_water, AMOUNT_VISIBLE)
 	reagents.add_reagent(chem, max_water)
 
@@ -192,9 +194,9 @@
 		step_towards(W,my_target)
 		if(!W.reagents)
 			continue
-		W.reagents.reaction(get_turf(W))
+		W.reagents.expose(get_turf(W))
 		for(var/A in get_turf(W))
-			W.reagents.reaction(A)
+			W.reagents.expose(A)
 		if(W.loc == my_target)
 			particles -= W
 	if(repetition < power)
@@ -227,7 +229,7 @@
 		return
 	EmptyExtinguisher(user)
 
-/obj/item/extinguisher/proc/EmptyExtinguisher(var/mob/user)
+/obj/item/extinguisher/proc/EmptyExtinguisher(mob/user)
 	if(loc == user && reagents.total_volume)
 		reagents.clear_reagents()
 

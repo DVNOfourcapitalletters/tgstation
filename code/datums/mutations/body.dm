@@ -230,7 +230,7 @@
 	locked = TRUE
 
 /datum/mutation/human/glow/anti/glow_color()
-	return COLOR_WHITE
+	return COLOR_VERY_LIGHT_GRAY
 
 /datum/mutation/human/strong
 	name = "Strength"
@@ -447,7 +447,7 @@
 		H.Stun(20)
 		H.blur_eyes(20)
 		eyes?.applyOrganDamage(5)
-		H.confused += 3
+		H.add_confusion(3)
 	for(var/mob/living/silicon/S in view(2,owner))
 		to_chat(S, "<span class='userdanger'>Your sensors are disabled by a shower of blood!</span>")
 		S.Paralyze(60)
@@ -477,13 +477,13 @@
 		head.drop_organs()
 		qdel(head)
 		owner.regenerate_icons()
-	RegisterSignal(owner, COMSIG_LIVING_ATTACH_LIMB, .proc/abortattachment)
+	RegisterSignal(owner, COMSIG_CARBON_ATTACH_LIMB, .proc/abortattachment)
 
 /datum/mutation/human/headless/on_losing()
 	. = ..()
 	if(.)
 		return TRUE
-	UnregisterSignal(owner, COMSIG_LIVING_ATTACH_LIMB)
+	UnregisterSignal(owner, COMSIG_CARBON_ATTACH_LIMB)
 	var/successful = owner.regenerate_limb(BODY_ZONE_HEAD, noheal = TRUE) //noheal needs to be TRUE to prevent weird adding and removing mutation healing
 	if(!successful)
 		stack_trace("HARS mutation head regeneration failed! (usually caused by headless syndrome having a head)")

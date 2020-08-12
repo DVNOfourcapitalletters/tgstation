@@ -6,12 +6,6 @@
 		"tgui.bundle.css" = 'tgui/packages/tgui/public/tgui.bundle.css',
 	)
 
-/datum/asset/group/tgui
-	children = list(
-		/datum/asset/simple/tgui,
-		/datum/asset/simple/fontawesome
-	)
-
 /datum/asset/simple/headers
 	assets = list(
 		"alarm_green.gif" 			= 'icons/program_icons/alarm_green.gif',
@@ -105,18 +99,18 @@
 	)
 
 
-/datum/asset/simple/IRV
+/datum/asset/simple/irv
 	assets = list(
 		"jquery-ui.custom-core-widgit-mouse-sortable-min.js" = 'html/IRV/jquery-ui.custom-core-widgit-mouse-sortable-min.js',
 	)
 
-/datum/asset/group/IRV
+/datum/asset/group/irv
 	children = list(
 		/datum/asset/simple/jquery,
-		/datum/asset/simple/IRV
+		/datum/asset/simple/irv
 	)
 
-/datum/asset/simple/changelog
+/datum/asset/simple/namespaced/changelog
 	assets = list(
 		"88x31.png" = 'html/88x31.png',
 		"bug-minus.png" = 'html/bug-minus.png',
@@ -138,37 +132,45 @@
 		"chrome-wrench.png" = 'html/chrome-wrench.png',
 		"changelog.css" = 'html/changelog.css'
 	)
+	parents = list("changelog.html" = 'html/changelog.html')
+	
 
 /datum/asset/group/goonchat
 	children = list(
 		/datum/asset/simple/jquery,
-		/datum/asset/simple/goonchat,
+		/datum/asset/simple/namespaced/goonchat,
 		/datum/asset/spritesheet/goonchat,
-		/datum/asset/simple/fontawesome
+		/datum/asset/simple/namespaced/fontawesome
 	)
 
 /datum/asset/simple/jquery
+	legacy = TRUE
 	assets = list(
 		"jquery.min.js"            = 'code/modules/goonchat/browserassets/js/jquery.min.js',
 	)
 
-/datum/asset/simple/goonchat
+/datum/asset/simple/namespaced/goonchat
+	legacy = TRUE
 	assets = list(
 		"json2.min.js"             = 'code/modules/goonchat/browserassets/js/json2.min.js',
 		"browserOutput.js"         = 'code/modules/goonchat/browserassets/js/browserOutput.js',
 		"browserOutput.css"	       = 'code/modules/goonchat/browserassets/css/browserOutput.css',
 		"browserOutput_white.css"  = 'code/modules/goonchat/browserassets/css/browserOutput_white.css',
 	)
+	parents = list(
+		//this list intentionally left empty (parent namespaced assets can't be referred to by name, only by generated url, and goonchat isn't smart enough for that. yet)
+	)
 
-/datum/asset/simple/fontawesome
+/datum/asset/simple/namespaced/fontawesome
+	legacy = TRUE
 	assets = list(
 		"fa-regular-400.eot"  = 'html/font-awesome/webfonts/fa-regular-400.eot',
 		"fa-regular-400.woff" = 'html/font-awesome/webfonts/fa-regular-400.woff',
 		"fa-solid-900.eot"    = 'html/font-awesome/webfonts/fa-solid-900.eot',
 		"fa-solid-900.woff"   = 'html/font-awesome/webfonts/fa-solid-900.woff',
-		"font-awesome.css"    = 'html/font-awesome/css/all.min.css',
 		"v4shim.css"          = 'html/font-awesome/css/v4-shims.min.css'
 	)
+	parents = list("font-awesome.css"    = 'html/font-awesome/css/all.min.css')
 
 /datum/asset/spritesheet/goonchat
 	name = "chat"
@@ -188,9 +190,25 @@
 
 	..()
 
+/datum/asset/simple/lobby
+	assets = list(
+		"playeroptions.css" = 'html/browser/playeroptions.css'
+	)
+
+/datum/asset/simple/namespaced/common
+	assets = list("padlock.png"	= 'html/padlock.png')
+	parents = list("common.css" = 'html/browser/common.css')
+
 /datum/asset/simple/permissions
 	assets = list(
-		"padlock.png"	= 'html/padlock.png'
+		"search.js" = 'html/admin/search.js',
+		"panels.css" = 'html/admin/panels.css'
+	)
+
+/datum/asset/group/permissions
+	children = list(
+		/datum/asset/simple/permissions,
+		/datum/asset/simple/namespaced/common
 	)
 
 /datum/asset/simple/notes
@@ -236,6 +254,22 @@
 		"rule8" = 'icons/UI_Icons/Achievements/Misc/rule8.png',
 		"snail" = 'icons/UI_Icons/Achievements/Misc/snail.png',
 		"mining" = 'icons/UI_Icons/Achievements/Skills/mining.png',
+		"assistant" = 'icons/UI_Icons/Achievements/Mafia/assistant.png',
+		"changeling" = 'icons/UI_Icons/Achievements/Mafia/changeling.png',
+		"chaplain" = 'icons/UI_Icons/Achievements/Mafia/chaplain.png',
+		"clown" = 'icons/UI_Icons/Achievements/Mafia/clown.png',
+		"detective" = 'icons/UI_Icons/Achievements/Mafia/detective.png',
+		"fugitive" = 'icons/UI_Icons/Achievements/Mafia/fugitive.png',
+		"hated" = 'icons/UI_Icons/Achievements/Mafia/hated.png',
+		"hop" = 'icons/UI_Icons/Achievements/Mafia/hop.png',
+		"lawyer" = 'icons/UI_Icons/Achievements/Mafia/lawyer.png',
+		"md" = 'icons/UI_Icons/Achievements/Mafia/md.png',
+		"nightmare" = 'icons/UI_Icons/Achievements/Mafia/nightmare.png',
+		"obsessed" = 'icons/UI_Icons/Achievements/Mafia/obsessed.png',
+		"psychologist" = 'icons/UI_Icons/Achievements/Mafia/psychologist.png',
+		"thoughtfeeder" = 'icons/UI_Icons/Achievements/Mafia/thoughtfeeder.png',
+		"traitor" = 'icons/UI_Icons/Achievements/Mafia/traitor.png',
+		"basemafia" ='icons/UI_Icons/Achievements/basemafia.png'
 	)
 
 /datum/asset/spritesheet/simple/pills
@@ -380,8 +414,29 @@
 		"dna_extra.gif" 		= 'html/dna_extra.gif'
 	)
 
+/datum/asset/simple/orbit
+	assets = list(
+		"ghost.png"	= 'html/ghost.png'
+	)
 
 /datum/asset/simple/vv
 	assets = list(
 		"view_variables.css" = 'html/admin/view_variables.css'
 	)
+
+/datum/asset/spritesheet/sheetmaterials
+	name = "sheetmaterials"
+
+/datum/asset/spritesheet/sheetmaterials/register()
+	InsertAll("", 'icons/obj/stack_objects.dmi')
+
+	// Special case to handle Bluespace Crystals
+	Insert("polycrystal", 'icons/obj/telescience.dmi', "polycrystal")
+	..()
+
+/datum/asset/spritesheet/mafia
+	name = "mafia"
+
+/datum/asset/spritesheet/mafia/register()
+	InsertAll("", 'icons/obj/mafia.dmi')
+	..()

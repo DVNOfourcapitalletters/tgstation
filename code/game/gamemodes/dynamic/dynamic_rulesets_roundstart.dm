@@ -18,7 +18,6 @@
 	cost = 10	// Avoid raising traitor threat above 10, as it is the default low cost ruleset.
 	scaling_cost = 10
 	requirements = list(10,10,10,10,10,10,10,10,10,10)
-	high_population_requirement = 10
 	antag_cap = list(1,1,1,1,2,2,2,2,3,3)
 	var/autotraitor_cooldown = 450 // 15 minutes (ticks once per 2 sec)
 
@@ -59,7 +58,6 @@
 	cost = 15
 	scaling_cost = 15
 	requirements = list(40,30,30,20,20,15,15,15,10,10)
-	high_population_requirement = 15
 	antag_cap = list(2,2,2,2,2,2,2,2,2,2)	// Can pick 3 per team, but rare enough it doesn't matter.
 	var/list/datum/team/brother_team/pre_brother_teams = list()
 	var/const/min_team_size = 2
@@ -110,7 +108,6 @@
 	cost = 15
 	scaling_cost = 15
 	requirements = list(70,70,60,50,40,20,20,10,10,10)
-	high_population_requirement = 10
 	antag_cap = list(1,1,1,1,1,2,2,2,2,3)
 	var/team_mode_probability = 30
 
@@ -147,6 +144,49 @@
 
 //////////////////////////////////////////////
 //                                          //
+//              ELDRITCH CULT               //
+//                                          //
+//////////////////////////////////////////////
+
+/datum/dynamic_ruleset/roundstart/heretics
+	name = "Heretics"
+	antag_flag = ROLE_HERETIC
+	antag_datum = /datum/antagonist/heretic
+	protected_roles = list("Prisoner","Security Officer", "Warden", "Detective", "Head of Security", "Captain")
+	restricted_roles = list("AI", "Cyborg")
+	required_candidates = 1
+	weight = 3
+	cost = 20
+	scaling_cost = 15
+	requirements = list(50,45,45,40,35,20,20,15,10,10)
+	antag_cap = list(1,1,1,1,2,2,2,2,3,3)
+
+
+/datum/dynamic_ruleset/roundstart/heretics/pre_execute()
+	. = ..()
+	var/num_ecult = antag_cap[indice_pop] * (scaled_times + 1)
+
+	for (var/i = 1 to num_ecult)
+		var/mob/picked_candidate = pick_n_take(candidates)
+		assigned += picked_candidate.mind
+		picked_candidate.mind.restricted_roles = restricted_roles
+		picked_candidate.mind.special_role = ROLE_HERETIC
+		GLOB.pre_setup_antags += picked_candidate.mind
+	return TRUE
+
+/datum/dynamic_ruleset/roundstart/heretics/execute()
+
+	for(var/c in assigned)
+		var/datum/mind/cultie = c
+		var/datum/antagonist/heretic/new_antag = new antag_datum()
+		cultie.add_antag_datum(new_antag)
+		GLOB.pre_setup_antags -= cultie
+
+	return TRUE
+
+
+//////////////////////////////////////////////
+//                                          //
 //               WIZARDS                    //
 //                                          //
 //////////////////////////////////////////////
@@ -162,7 +202,6 @@
 	weight = 2
 	cost = 30
 	requirements = list(90,90,70,40,30,20,10,10,10,10)
-	high_population_requirement = 10
 	var/list/roundstart_wizards = list()
 
 /datum/dynamic_ruleset/roundstart/wizard/acceptable(population=0, threat=0)
@@ -206,7 +245,6 @@
 	weight = 3
 	cost = 35
 	requirements = list(100,90,80,60,40,30,10,10,10,10)
-	high_population_requirement = 10
 	flags = HIGHLANDER_RULESET
 	antag_cap = list(2,2,2,3,3,4,4,4,4,4)
 	var/datum/team/cult/main_cult
@@ -265,7 +303,6 @@
 	weight = 3
 	cost = 40
 	requirements = list(90,90,90,80,60,40,30,20,10,10)
-	high_population_requirement = 10
 	flags = HIGHLANDER_RULESET
 	antag_cap = list(2,2,2,3,3,3,4,4,5,5)
 	var/datum/team/nuclear/nuke_team
@@ -300,7 +337,7 @@
 	return TRUE
 
 /datum/dynamic_ruleset/roundstart/nuclear/round_result()
-	var result = nuke_team.get_result()
+	var/result = nuke_team.get_result()
 	switch(result)
 		if(NUKE_RESULT_FLUKE)
 			SSticker.mode_result = "loss - syndicate nuked - disk secured"
@@ -352,7 +389,6 @@
 	delay = 7 MINUTES
 	cost = 35
 	requirements = list(101,101,70,40,30,20,10,10,10,10)
-	high_population_requirement = 10
 	antag_cap = list(3,3,3,3,3,3,3,3,3,3)
 	flags = HIGHLANDER_RULESET
 	blocking_rules = list(/datum/dynamic_ruleset/latejoin/provocateur)
@@ -423,7 +459,7 @@
 		return RULESET_STOP_PROCESSING
 
 /// Checks for revhead loss conditions and other antag datums.
-/datum/dynamic_ruleset/roundstart/revs/proc/check_eligible(var/datum/mind/M)
+/datum/dynamic_ruleset/roundstart/revs/proc/check_eligible(datum/mind/M)
 	var/turf/T = get_turf(M.current)
 	if(!considered_afk(M) && considered_alive(M) && is_station_level(T.z) && !M.antag_datums?.len && !HAS_TRAIT(M, TRAIT_MINDSHIELD))
 		return TRUE
@@ -457,6 +493,49 @@
 		SSticker.mode_result = "loss - rev heads killed"
 		SSticker.news_report = REVS_LOSE
 
+//////////////////////////////////////////////
+//                                          //
+//                 FAMILIES                 //
+//                                          //
+//////////////////////////////////////////////
+
+/datum/dynamic_ruleset/roundstart/families
+	name = "Families"
+	persistent = TRUE
+	antag_flag = ROLE_FAMILIES
+	protected_roles = list("Prisoner", "Head of Personnel")
+	restricted_roles = list("Cyborg", "AI", "Security Officer", "Warden", "Detective", "Head of Security", "Captain")
+	required_candidates = 6 // gotta have 'em ALL
+	weight = 2
+	cost = 30
+	requirements = list(101,101,101,101,101,70,40,10,10,10)
+	flags = HIGHLANDER_RULESET
+	minimum_players = 36
+	antag_cap = list(6,6,6,6,6,6,6,6,6,6)
+	/// A reference to the handler that is used to run pre_execute(), execute(), etc..
+	var/datum/gang_handler/handler
+
+/datum/dynamic_ruleset/roundstart/families/pre_execute()
+	..()
+	handler = new /datum/gang_handler(candidates,restricted_roles)
+	handler.gangs_to_generate = (antag_cap[indice_pop] / 2)
+	handler.gang_balance_cap = clamp((indice_pop - 3), 2, 5) // gang_balance_cap by indice_pop: (2,2,2,2,2,3,4,5,5,5)
+	handler.use_dynamic_timing = TRUE
+	return handler.pre_setup_analogue()
+
+/datum/dynamic_ruleset/roundstart/families/execute()
+	return handler.post_setup_analogue(TRUE)
+
+/datum/dynamic_ruleset/roundstart/families/clean_up()
+	QDEL_NULL(handler)
+	..()
+
+/datum/dynamic_ruleset/roundstart/families/rule_process()
+	return handler.process_analogue()
+
+/datum/dynamic_ruleset/roundstart/families/round_result()
+	return handler.set_round_result_analogue()
+
 // Admin only rulesets. The threat requirement is 101 so it is not possible to roll them.
 
 //////////////////////////////////////////////
@@ -474,7 +553,6 @@
 	weight = 3
 	cost = 0
 	requirements = list(101,101,101,101,101,101,101,101,101,101)
-	high_population_requirement = 101
 
 /datum/dynamic_ruleset/roundstart/extended/pre_execute()
 	. = ..()
@@ -495,7 +573,6 @@
 	antag_datum = /datum/antagonist/nukeop/clownop
 	antag_leader_datum = /datum/antagonist/nukeop/leader/clownop
 	requirements = list(101,101,101,101,101,101,101,101,101,101)
-	high_population_requirement = 101
 
 /datum/dynamic_ruleset/roundstart/nuclear/clown_ops/pre_execute()
 	. = ..()
@@ -524,7 +601,6 @@
 	weight = 3
 	cost = 0
 	requirements = list(101,101,101,101,101,101,101,101,101,101)
-	high_population_requirement = 101
 	antag_cap = list(1,1,1,2,2,2,3,3,3,4)
 
 /datum/dynamic_ruleset/roundstart/devil/pre_execute()
@@ -578,7 +654,6 @@
 	weight = 3
 	cost = 0
 	requirements = list(101,101,101,101,101,101,101,101,101,101)
-	high_population_requirement = 101
 	var/players_per_carrier = 30
 	var/monkeys_to_win = 1
 	var/escaped_monkeys = 0
@@ -638,7 +713,6 @@
 	weight = 3
 	cost = 0
 	requirements = list(101,101,101,101,101,101,101,101,101,101)
-	high_population_requirement = 101
 	var/meteordelay = 2000
 	var/nometeors = 0
 	var/rampupdelta = 5
